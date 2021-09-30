@@ -24,7 +24,7 @@ on-selected.trigger="selectedRecord($event)"
         on-unlock.trigger="unlockRecord($event)"
         on-delete.trigger="deleteRecord($event)"
         
-
+        on-edit.trigger="editRecord($event)"
         xpage-size=10>
      
         <data-grid-col header="" col="" type="bool" filter-by="none" width="60px">
@@ -196,19 +196,19 @@ on-selected.trigger="selectedRecord($event)"
               <i class="fa fa-trash"></i>
             </button>
            
-            <button class="form-button transparent" data-trigger="click:broadcastEvent" data-function="addRecord">
+            <button class="form-button transparent" data-trigger="click:broadcastEvent"  data-trigger="click:broadcastEvent" data-function="addRecord">
                 <i class="fa fa-plus"></i>New
               </button>
             <!--  data-visible-after-filter -->
-            <button class="form-button shake p-5 font-small hidden"
+            <!-- <button class="form-button shake p-5 font-small hidden"
             data-trigger="click:broadcastEvent" data-function="addRecord"
            >
             <i class="fas fa-fw fa-plus"></i>
             Add New
-          </button>
-          <!-- <button class="form-button transparent" data-trigger="click:broadcastEvent" data-function="on-selected">
-            <i class="fa fa-angle-right"></i>Sel
           </button> -->
+          <button class="form-button transparent" data-trigger="click:broadcastEvent" data-function="on-edit">
+            <i class="fa fa-edit"></i>edit
+          </button>
           </template>
         </data-grid-col>
           <data-grid-col header="State" col="(item) => item.location.state" type="string" filter-by="equal" width="175px">
@@ -221,7 +221,7 @@ on-selected.trigger="selectedRecord($event)"
              
   
               <button class="form-button shake p-5 font-small " data-trigger="click:broadcastEvent"
-                data-function="on-added" data-visible-after-filter>
+                data-function="onAdd" data-visible-after-filter>
                 <i class="fas fa-fw fa-plus"></i>
                 Add New
               </button>
