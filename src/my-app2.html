@@ -1,0 +1,207 @@
+<!-- <div class="message">${message}</div> -->
+<!-- <!DOCTYPE html> -->
+
+<div class="content">
+    <css-theme hex="#4095bf"></css-theme>
+    <!--      on-select.trigger="selectRecord($event)"
+          on-select.trigger="selectRecord($event)" 
+          on-added.trigger.bind="addedRecord($event)"
+             on-added.trigger.bind="addedRecord()"
+         on-edit.trigger.bind="onEdit($event)"
+        -->
+    <data-grid id="fixedGrid" items.bind="items" extra-data.bind="extraData" is-full-width is-hoverable
+        row-key="(item) => item.id.value" allow-sort="true" allow-multi-sort="true" filter-type="client"
+        on-unlock.trigger="unlockRecord($event)" on-delete.trigger="deleteRecord($event)"
+        on-selected.trigger="selectedRecord($event)" on-add.trigger.bind='onAdd()' xpage-size=10>
+        <data-grid-col header="" col="" type="bool" filter-by="none" width="60px">
+            <template id="column-template">
+                <input class="row-selector" type="checkbox" data-trigger="click:broadcastEvent"
+                    data-function="selectRecord">
+            </template>
+        </data-grid-col>
+
+
+
+        <data-grid-col header="Photo" col="(item) => item.picture.large" type="photo" width="110px">
+           
+            <template id="column-template">
+                <style>
+                    img {
+                        height: 48px;
+                        width: 48px;
+                        border-radius: 15px;
+                    }
+                </style>
+                <img src="{{item.picture.medium}}">
+            </template>
+        </data-grid-col>
+
+        <data-grid-col header="Gender" col="(item) => item.gender" type="string" filter-by="starts-with" width="125px">
+            <template id="header-template">
+                <div class="header-group">
+                    <select class="header-control" data-path="gender" data-trigger="
+                  keydown:onFilter
+                ">
+                    </select>
+                   
+                </div>
+            </template>
+            <!-- <template id="column-template"> -->
+            <!-- <a class="link">
+              ${toProper(item.gender)}
+            </a> -->
+            <template id="column-template">
+                <a class="link ${item.gender == 'female' ? 'hidden' : ''}" style="background: blue; color: white;">
+                    ${toProper(item.gender)}
+                </a>
+                <a class="link ${item.gender === 'male' ? 'hidden' : ''}" style="background: indigo; color: white;">
+                    ${toProper(item.gender)}
+                </a>
+            </template>
+        </data-grid-col>
+
+
+
+
+        <data-grid-col header="Full Name (Last, First)"
+            col="(item) => { return `${item.name.last}, ${item.name.first}`; }" type="string" filter-by="starts-with"
+            width="275px">
+            <template id="header-template">
+                <div class="header-group grid columns-2 column-gap-15">
+                    <input class="header-control" type="search" placeholder="Last" data-path="name.last" data-trigger="
+                  keydown:onFilter
+                  keyup:capitalize
+                ">
+                    <input class="header-control" type="search" placeholder="First" data-path="name.first" data-trigger="
+                  keydown:onFilter
+                  keyup:capitalize
+                ">
+                </div>
+            </template>
+            <template id="column-template">
+                <a class="link">
+                    ${item.name.last}, ${item.name.first}
+                </a>
+            </template>
+        </data-grid-col>
+        <data-grid-col header="Email" col="(item) => item.email" type="string" filter-by="not-equal" width="275px">
+            <template id="header-template">
+                <div class="header-group">
+                    <input class="header-control" type="search" placeholder="Email" data-path="email"
+                        data-trigger="keydown:onFilter">
+                </div>
+                <button>
+                    <a href="https://ghiscoding.github.io/aurelia-slickgrid/#/slickgrid/" target="_blank">
+                        slickgriddemo
+                </button>
+            </template>
+        </data-grid-col>
+        <data-grid-col header="Phone" col="(item) => toPhone(item.phone)" type="string" filter-by="contains"
+            width="175px">
+            <template id="header-template">
+                <div class="header-group">
+                    <input class="header-control" type="search" placeholder="Phone" data-path="phone"
+                        data-trigger="keydown:onFilter">
+                </div>
+            </template>
+        </data-grid-col>
+        <data-grid-col header="Address" col="(item) => item.location.street.name" type="string" filter-by="starts-with"
+            width="300px">
+            <template id="header-template">
+                <div class="header-group">
+                    <input class="header-control" type="search" placeholder="Street" data-path="location.street.name"
+                        data-trigger="keydown:onFilter">
+                </div>
+            </template>
+            <template id="column-template">
+                <div>
+                    ${item.location.street.number} ${item.location.street.name}
+                </div>
+                <div>
+                    ${item.location.city}, ${item.location.state} ${item.location.postcode}
+                </div>
+            </template>
+        </data-grid-col>
+        <data-grid-col header="Modified By" col="(item) => item.login.username" type="string" filter-by="starts-with"
+            width="215px">
+            <template id="header-template">
+                <div class="header-group">
+                    <input class="header-control" type="search" placeholder="Username" data-path="login.username"
+                        data-trigger="keydown:onFilter">
+                </div>
+            </template>
+            <template id="column-template">
+                <div>
+                    ${item.login.username}
+                </div>
+                <div>
+                    ${toDate(item.registered.date)}
+                </div>
+            </template>
+        </data-grid-col>
+        <data-grid-col header="Actions" col="(item) => item.action" type="action" filter-by="none" width="100px">
+            <template id="header-template">
+                <div class="header-group grid columns-2 column-gap-10">
+                    <button class="btn p-5 font-small" title="Search" data-trigger="click:performFilter">
+                        <i class="fas fa-fw fa-search"></i>
+
+                    </button>
+                    <button class="btn p-5 font-small" title="Clear" data-trigger="click:clearFilter">
+                        <i class="fas fa-fw fa-ban"></i>
+                    </button>
+                    <!-- <button>
+                        <a href="https://ghiscoding.github.io/aurelia-slickgrid/#/slickgrid/" target="_blank">
+                            slickgriddemo
+                            <i class="fa fa-lock-open"></i>slickgriddemo </a>
+                    </button> -->
+
+                    <button class="form-button shake p-5 font-small " data-trigger="click:broadcastEvent"
+                        data-function="on-added" data-visible-after-filter>
+                        <i class="fas fa-fw fa-plus"></i>
+                        Add New
+                    </button>
+                </div>
+            </template>
+        </data-grid-col>
+        <data-grid-col header="State" col="(item) => item.location.state" type="string" filter-by="starts-with"
+            width="215px">
+            <template id="header-template">
+                <div class="header-group">
+                    <input class="header-control" type="search" placeholder="state" data-path="item.location.state"
+                        data-trigger="keydown:onFilter">
+                </div>
+            </template>
+        </data-grid-col>
+        <data-grid-col header="State" col="(item) => item.location.state" type="string" filter-by="equal" width="125px">
+            <template id="header-template">
+                <div class="header-group">
+                    <select class="header-control" data-path="state" data-trigger="
+                        keydown:onFilter
+                      ">
+                    </select>
+                </div>
+            </template>
+
+            <!-- <template id="column-template">
+                <div> ${item.location.state} 
+                    </div>
+                  </template> -->
+
+        </data-grid-col>
+
+        <template id="column-template">
+            <button class="is-locked form-button transparent" data-trigger="click:broadcastEvent"
+                data-function="on-unlock">
+                <i class="fa fa-lock"></i>
+            </button>
+
+            <button class="form-button transparent" data-trigger="click:broadcastEvent" data-function="on-delete">
+                <i class="fa fa-trash"></i>
+            </button>
+            <button class="form-button transparent" data-trigger="click:broadcastEvent" data-function="on-selected">
+                <i class="fa fa-angle-right"></i>
+            </button>
+        </template>
+        </data-grid-col>
+    </data-grid>
+</div>
